@@ -1,0 +1,93 @@
+{
+  "name": "@godaddy/jiractl",
+  "version": "1.0.0",
+  "description": "Jira command-line tool",
+  "main": "index.js",
+  "bin": {
+    "jiractl": "./bin/cli.js"
+  },
+  "scripts": {
+    "lint": "eslint --config .eslintrc.js --fix src/ test/ index.js",
+    "test": "npm run lint && mocha --recursive",
+    "install": "tabtab install --auto --name jiractl",
+    "uninstall": "tabtab uninstall --auto --name jiractl"
+  },
+  "tabtab": {
+    "jiractl": [
+      "setup",
+      "alias",
+      "get",
+      "describe",
+      "update",
+      "open"
+    ],
+    "setup": [],
+    "alias": [],
+    "get": [
+      "team",
+      "teams",
+      "sprint",
+      "sprints",
+      "epic",
+      "epics",
+      "issue",
+      "issues"
+    ],
+    "describe": [
+      "team",
+      "teams",
+      "sprint",
+      "sprints",
+      "epic",
+      "epics",
+      "issue",
+      "issues"
+    ],
+    "update": [
+      "issue"
+    ],
+    "open": [],
+    "team": [],
+    "teams": [],
+    "sprint": [],
+    "sprints": [],
+    "epic": [],
+    "epics": [],
+    "issue": [],
+    "issues": []
+  },
+  "repository": "godaddy/jiractl",
+  "keywords": [
+    "cli",
+    "command",
+    "console",
+    "jira",
+    "manage",
+    "shell"
+  ],
+  "author": "GoDaddy Operating Company, LLC",
+  "license": "MIT",
+  "dependencies": {
+    "cli-table2": "^0.2.0",
+    "editor2": "^1.0.3",
+    "opn": "^5.2.0",
+    "readline-sync": "^1.4.9",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "tabtab": "^2.2.2",
+    "tmp": "0.0.33",
+    "yargs": "^10.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "eslint-config-godaddy": "^2.1.0",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-mocha": "^5.0.0",
+    "mocha": "^5.1.1",
+    "nock": "^9.2.5",
+    "proxyquire": "^2.0.1",
+    "rewire": "^4.0.1",
+    "sinon": "^5.0.2"
+  }
+}
