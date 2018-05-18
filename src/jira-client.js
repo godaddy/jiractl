@@ -22,17 +22,21 @@ async function getSessionCookie({
   username = getCurrentContext().username,
   password = getCurrentContext().password } = {}
 ) {
-  const { session } = await rp({
-    method: 'POST',
-    uri: makeJiraUri({ baseUri, uri: 'auth/1/session' }),
-    body: {
-      username,
-      password
-    },
-    json: true,
-    followAllRedirects: true
-  });
-  return `${session.name}=${session.value}`;
+  try {
+    const { session } = await rp({
+      method: 'POST',
+      uri: makeJiraUri({ baseUri, uri: 'auth/1/session' }),
+      body: {
+        username,
+        password
+      },
+      json: true,
+      followAllRedirects: true
+    });
+    return `${session.name}=${session.value}`;
+  } catch (err) {
+    throw new Error(err.error.errorMessages ? err.error.errorMessages.join(', ') : err.message);
+  }
 }
 
 function makeJiraUri({ baseUri = getCurrentContext().uri, uri } = {}) {
@@ -41,33 +45,45 @@ function makeJiraUri({ baseUri = getCurrentContext().uri, uri } = {}) {
 
 async function makeQuery({ jql, selector = (results) => results.total } = {}) {
   const points = getCurrentContext().points;
-  const response = await rp(Object.assign({}, await getRequestOptions(), {
-    method: 'POST',
-    uri: makeJiraUri({ uri: 'api/2/search' }),
-    body: {
-      jql,
-      startAt: 0,
-      maxResults: 10000,
-      fields: ['summary', 'status', 'assignee', 'description', points],
-      expand: ['schema', 'names']
-    }
-  }));
-  return selector(response);
+  try {
+    const response = await rp(Object.assign({}, await getRequestOptions(), {
+      method: 'POST',
+      uri: makeJiraUri({ uri: 'api/2/search' }),
+      body: {
+        jql,
+        startAt: 0,
+        maxResults: 10000,
+        fields: ['summary', 'status', 'assignee', 'description', points],
+        expand: ['schema', 'names']
+      }
+    }));
+    return selector(response);
+  } catch (err) {
+    throw new Error(err.error.errorMessages.join(', '));
+  }
 }
 
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
-  return await rp(Object.assign({}, await getRequestOptions(), options, {
-    method: 'GET',
-    uri: makeJiraUri({ uri: `${api}/${url}` })
-  }));
+  try {
+    return await rp(Object.assign({}, await getRequestOptions(), options, {
+      method: 'GET',
+      uri: makeJiraUri({ uri: `${api}/${url}` })
+    }));
+  } catch (err) {
+    throw new Error(err.error.errorMessages.join(', '));
+  }
 }
 
 async function makePutRequest(url, api = 'agile/1.0', data = {}) {
-  return await rp(Object.assign({}, await getRequestOptions(), {
-    method: 'PUT',
-    uri: makeJiraUri({ uri: `${api}/${url}` }),
-    body: data
-  }));
+  try {
+    return await rp(Object.assign({}, await getRequestOptions(), {
+      method: 'PUT',
+      uri: makeJiraUri({ uri: `${api}/${url}` }),
+      body: data
+    }));
+  } catch (err) {
+    throw new Error(err.error.errorMessages.join(', '));
+  }
 }
 
 module.exports = {
