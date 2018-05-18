@@ -73,9 +73,7 @@ async function update(args) {
   // To see keys that can be updated:
   // await makeGetRequest(`issue/${ id }/editmeta`, api='api/2');
   if (!Object.keys(args).some(key => supportedUpdateFields.includes(key))) {
-    return {
-      error: `Editable fields are ${ supportedUpdateFields.join(', ') }`
-    };
+    throw new Error(`Editable fields are ${ supportedUpdateFields.join(', ') }`);
   }
 
   let outputData = {};

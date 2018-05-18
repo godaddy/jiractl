@@ -33,10 +33,9 @@ describe('src.config.actions', () => {
       const result = await stubbedActions({
         addContext,
         setCurrentContext })['set-context']({ id: context, password, username });
-      let error;
       expect(addContext.calledOnce).to.be.true;
       expect(setCurrentContext.calledOnce).to.be.true;
-      expect(result).to.eql({ context, defaultContext: context, error, password, points, username });
+      expect(result).to.eql({ context, defaultContext: context, password, points, username });
     });
 
     it('doesn\'t set the current context if it\'s already set', async () => {
@@ -47,31 +46,51 @@ describe('src.config.actions', () => {
         addContext,
         getCurrentContext,
         setCurrentContext })['set-context']({ id: context, password, username });
-      let error;
       let defaultContext;
       expect(addContext.calledOnce).to.be.true;
       expect(setCurrentContext.called).to.be.false;
-      expect(result).to.eql({ context, defaultContext, error, password, points, username });
+      expect(result).to.eql({ context, defaultContext, password, points, username });
     });
 
-    it('sets points to undefined if the points field is missing', async () => {
-      const makeGetRequest = () => { return; };
-      const result = await stubbedActions({ makeGetRequest })['set-context']({ id: context, password, username });
-      expect(result.points).to.be.undefined;
+    it('throws an error when the points field is missing', async () => {
+      const makeGetRequest = () => { return []; };
+      let error;
+      try {
+        await stubbedActions({ makeGetRequest })['set-context']({ id: context, password, username });
+      } catch (err) {
+	  error = err;
+      }
+      expect(error.message).to.equal('No points field configured');
     });
   });
 
   describe('.getEstimator', () => {
     it('returns the points field when one is configured', async () => {
       const result = await stubbedActions({}).getEstimator();
-      let error;
-      expect(result).to.eql({ points, error });
+      expect(result).to.eql(points);
     });
 
-    it('catches errors when makeGetRequest returns no results', async () => {
+    it('throws an error when makeGetRequest returns no results', async () => {
       const makeGetRequest = () => { return; };
-      const result = await stubbedActions({ makeGetRequest }).getEstimator();
-      expect(result.error.toString()).to.equal('TypeError: Cannot read property \'filter\' of undefined');
+      let error;
+      try {
+        await stubbedActions({ makeGetRequest }).getEstimator();
+      } catch (err) {
+        error = err;
+      }
+      expect(error.message).to.equal('Cannot read property \'filter\' of undefined');
     });
+
+    it('throws an error when no points field is configured', async () => {
+      const makeGetRequest = () => { return []; };
+      let error;
+      try {
+        await stubbedActions({ makeGetRequest }).getEstimator();
+      } catch (err) {
+        error = err;
+      }
+      expect(error.message).to.equal('No points field configured');
+    });
+
   });
 });

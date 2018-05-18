@@ -17,44 +17,34 @@ function getInput({ username, password }) {
 
 async function setContext({ id, username, password }) {
   const context = id;
-  let error, defaultContext, points;
+  let defaultContext;
 
   ({ username, password } = getInput({ username, password }));
 
-  try {
-    await getSessionCookie({ baseUri: context, username, password });
-    addContext({ context, username, password });
+  await getSessionCookie({ baseUri: context, username, password });
+  addContext({ context, username, password });
 
-    if (!getCurrentContext()) {
-      defaultContext = context;
-      setCurrentContext(context);
-    }
-
-    ({ error, points } = await getEstimator());
-    if (points) {
-      addPoints({ context, points });
-    }
-  } catch (err) {
-    error = err;
+  if (!getCurrentContext()) {
+    defaultContext = context;
+    setCurrentContext(context);
   }
 
-  return { context, username, password, points, defaultContext, error };
+  const points = await getEstimator();
+  addPoints({ context, points });
+
+  return { context, username, password, points, defaultContext };
 }
 
 async function getEstimator() {
-  let points, error;
-  try {
-    const fields = await makeGetRequest('field', 'api/2');
-    const pointsField = fields.filter(field => field.name === 'Story Points');
-    if (pointsField.length) {
-      points = pointsField[0].id;
-    } else {
-      error = new Error('No points field configured');
-    }
-  } catch (err) {
-    error = err;
+  let points;
+  const fields = await makeGetRequest('field', 'api/2');
+  const pointsField = fields.filter(field => field.name === 'Story Points');
+  if (pointsField.length) {
+    points = pointsField[0].id;
+  } else {
+    throw new Error('No points field configured');
   }
-  return { error, points };
+  return points;
 }
 
 module.exports = {

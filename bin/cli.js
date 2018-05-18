@@ -74,8 +74,12 @@ async function main() {
     };
   }
 
-  const output = await handler.action(argv);
-  handler.formatters[argv.output](output, argv);
+  try {
+    const output = await handler.action(argv);
+    handler.formatters[argv.output](output, argv);
+  } catch (error) {
+    formatters[argv.output].error({ error, context, action, id });
+  }
 }
 
 main()
