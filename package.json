@@ -70,6 +70,7 @@
   "dependencies": {
     "cli-table3": "^0.5.0",
     "editor2": "^1.0.3",
+    "keytar": "^4.3.0",
     "opn": "^5.2.0",
     "readline-sync": "^1.4.9",
     "request": "^2.83.0",

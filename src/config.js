@@ -3,6 +3,7 @@ const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
 const fs = require('fs');
+const keytar = require('keytar');
 
 const configDir = path.join(os.homedir(), '.jiractl');
 const configFilePath = path.join(configDir, 'config.json');
@@ -19,10 +20,29 @@ function ensureConfig() {
 
 function loadConfig() {
   ensureConfig();
-  return require(configFilePath);
+  const config = require(configFilePath);
+
+  for (const context in config.contexts) {
+    if (Object.prototype.hasOwnProperty.call(config.contexts, context)) {
+      if (!config.contexts[context].password) {
+        const password = keytar.getPassword('jiractl', context);
+        config.contexts[context].password = password;
+      }
+    }
+  }
+
+  return config;
 }
 
 function saveConfig(config) {
+  for (const context in config.contexts) {
+    if (Object.prototype.hasOwnProperty.call(config.contexts, context)) {
+      const password = config.contexts[context].password;
+      keytar.setPassword('jiractl', context, password);
+      delete context.password;
+    }
+  }
+
   fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 }
 
