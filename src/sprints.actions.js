@@ -1,12 +1,25 @@
 const { getTeamId } = require('./team-data');
 const client = require('./jira-client');
 
+async function pageSprints(teamId, startAt = 0) {
+  const sprints = await client.makeGetRequest(`board/${ teamId }/sprint?startAt=${ startAt }`);
+  let sprintValues = sprints.values;
+
+  if (!sprints.isLast) {
+    const nextPage = await pageSprints(teamId, startAt + 50);
+    sprintValues = sprintValues.concat(nextPage);
+  }
+
+  return sprintValues;
+}
+
 async function getSprints({ team }) {
   const teamId = getTeamId(team);
-  const sprints = await client.makeGetRequest(`board/${ teamId }/sprint`);
   const summary = await getVelocities(teamId);
   const velocities = summary.velocityStatEntries;
-  return sprints.values
+  const sprints = await pageSprints(teamId);
+
+  return sprints
     .filter(sprint => sprint.originBoardId === teamId)
     .sort((a, b) => b.id - a.id)
     .map(sprint => Object.assign({}, sprint, {
