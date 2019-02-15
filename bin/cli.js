@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable max-statements */
 
 const configActions = require('../src/config.actions');
 const epicActions = require('../src/epic.actions');
@@ -13,12 +14,15 @@ const teamActions = require('../src/team.actions');
 const teamsActions = require('../src/teams.actions');
 
 const opn = require('opn');
-const argv = require('yargs')
+const yargs = require('yargs')
   .usage('Usage: jiractl --team=orange-cats [action] [context]')
   .default('output', 'console')
   .alias('t', 'team')
   .alias('o', 'output')
-  .argv;
+  .describe('o', 'Pick output format')
+  .choices('o', ['console', 'json']);
+
+const argv = yargs.argv;
 
 let action = argv._[0]; // get, update, describe
 let context = argv._[1]; // epic(s), sprint(s), team(s)
@@ -39,6 +43,11 @@ const handlers = {
 };
 
 async function main() {
+  if (!action) {
+    yargs.showHelp();
+    return;
+  }
+
   if (action === 'open') {
     const itemKey = context;
     await opn(`${ getCurrentContext().uri }/browse/${ itemKey }`);
