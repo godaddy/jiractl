@@ -1,5 +1,7 @@
 # jiractl
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/godaddy/jiractl.svg)](https://greenkeeper.io/)
+
 A command-line tool for managing Jira.
 
 ## Install with
