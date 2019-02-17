@@ -9,10 +9,9 @@
   "scripts": {
     "lint": "eslint --config .eslintrc.js --fix src/ test/ index.js",
     "test": "npm run lint && mocha --recursive",
-    "install": "tabtab install --auto --name jiractl",
-    "uninstall": "tabtab uninstall --auto --name jiractl"
+    "uninstall": "./bin/cli.js uninstall-completion"
   },
-  "tabtab": {
+  "completions": {
     "jiractl": [
       "setup",
       "alias",
@@ -74,7 +73,7 @@
     "readline-sync": "^1.4.9",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "tabtab": "^2.2.2",
+    "tabtab": "^3.0.2",
     "tmp": "0.0.33",
     "yargs": "^10.1.1"
   },
