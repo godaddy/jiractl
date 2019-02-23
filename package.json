@@ -7,7 +7,7 @@
     "jiractl": "./bin/cli.js"
   },
   "scripts": {
-    "lint": "eslint --config .eslintrc.js --fix src/ test/ index.js",
+    "lint": "eslint --config .eslintrc.js --fix src/ test/ bin/",
     "test": "npm run lint && mocha --recursive",
     "uninstall": "./bin/cli.js uninstall-completion"
   },

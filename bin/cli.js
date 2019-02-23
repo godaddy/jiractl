@@ -50,7 +50,7 @@ async function main() {
     await tabtab.install({ name: 'jiractl', completer: 'jiractl' });
     return;
   } else if (action === 'uninstall-completion') {
-    await tabtab.uninstall({ name: 'jiractl' })
+    await tabtab.uninstall({ name: 'jiractl' });
     return;
   } else if (action === 'completion') {
     const env = tabtab.parseEnv(process.env);
