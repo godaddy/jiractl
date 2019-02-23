@@ -13,6 +13,7 @@ const teamActions = require('../src/team.actions');
 const teamsActions = require('../src/teams.actions');
 
 const opn = require('opn');
+const tabtab = require('tabtab');
 const argv = require('yargs')
   .usage('Usage: jiractl --team=orange-cats [action] [context]')
   .default('output', 'console')
@@ -25,8 +26,6 @@ let context = argv._[1]; // epic(s), sprint(s), team(s)
 const id = argv._[2]; // e.g. sprint id, project id
 argv.id = id;
 
-require('tabtab')().start();
-
 const handlers = {
   config: configActions,
   epic: epicActions,
@@ -38,7 +37,26 @@ const handlers = {
   teams: teamsActions
 };
 
+function completion(env) {
+  const completions = require('../package.json').completions;
+  if (env.prev in completions) {
+    tabtab.log(completions[env.prev]);
+  }
+  return;
+}
+
 async function main() {
+  if (action === 'install-completion') {
+    await tabtab.install({ name: 'jiractl', completer: 'jiractl' });
+    return;
+  } else if (action === 'uninstall-completion') {
+    await tabtab.uninstall({ name: 'jiractl' })
+    return;
+  } else if (action === 'completion') {
+    const env = tabtab.parseEnv(process.env);
+    return completion(env);
+  }
+
   if (action === 'open') {
     const itemKey = context;
     await opn(`${ getCurrentContext().uri }/browse/${ itemKey }`);

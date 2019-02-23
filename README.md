@@ -2,9 +2,16 @@
 
 A command-line tool for managing Jira.
 
-## Install with
+## Install
+
 ```
 npm i @godaddy/jiractl --global
+```
+
+Optionally enable autocomplete:
+
+```
+jiractl install-completion
 ```
 
 ## Setup
