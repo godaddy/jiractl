@@ -3,14 +3,6 @@ const { getTeamId } = require('./team-data');
 const { makeGetRequest } = require('./jira-client');
 const { getCurrentContext } = require('./config');
 
-function getPredictability(sprints) {
-  const mean = (velocities) => velocities.reduce((sum, velocity) => sum + velocity) / velocities.length;
-  const standardDeviation = (velocities) => Math.sqrt(mean(velocities.map((velocity) => Math.pow(velocity - mean(velocities), 2))));
-
-  const velocities = sprints.map(sprint => sprint.velocity).filter(velocity => velocity > 0);
-  return (100 - (standardDeviation(velocities) / mean(velocities) * 100)).toFixed(2);
-}
-
 async function getTeam(teamId) {
   const team = await makeGetRequest('board/' + teamId);
   delete team.self;
@@ -34,10 +26,7 @@ async function describe({ id }) {
     summary: issue.fields.summary,
     points: issue.fields[points] || '-'
   }));
-
-  const predictability = getPredictability(sprints);
-
-  const results = Object.assign({}, teamObj, { velocity: stats }, { backlog: issues }, { predictability });
+  const results = Object.assign({}, teamObj, { velocity: stats }, { backlog: issues });
   const activeSprint = sprints.filter(sprint => sprint.state === 'active');
   if (activeSprint) {
     results.activeSprint = activeSprint[0];

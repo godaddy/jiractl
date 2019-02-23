@@ -95,10 +95,6 @@ function consoleSprintsFormatter(sprints) {
 
 function consoleTeamFormatter(team) {
   logTable([{ name: team.name, id: team.id, type: team.type }]);
-  if (team.predictability) {
-    console.log(`\nPredictability: ${team.predictability}%`);
-  }
-
   if (team.velocity) {
     console.log();
     console.log('Velocity:');
@@ -144,11 +140,11 @@ function jsonConfigFormatter(config) {
   console.log(JSON.stringify(config, null, 2));
 }
 
-function consoleErrorFormatter({ error, context, action, id }) {
+function consoleErrorFormatter({error, context, action, id}) {
   console.log(`Received error "${ error.message }" when performing action ${ action } on context ${ context } with id ${ id }`);
 }
 
-function jsonErrorFormatter({ error, context, action, id }) {
+function jsonErrorFormatter({error, context, action, id}) {
   console.log(JSON.stringify({ error: error.message, id, context, action }, null, 2));
 }
 
