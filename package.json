@@ -82,7 +82,7 @@
     "eslint": "^5.14.1",
     "eslint-config-godaddy": "^3.0.0",
     "eslint-plugin-json": "^1.2.0",
-    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-mocha": "^6.0.0",
     "mocha": "^6.0.1",
     "nock": "^10.0.6",
     "proxyquire": "^2.0.1",
