@@ -1,6 +1,6 @@
 {
   "name": "@godaddy/jiractl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Jira command-line tool",
   "main": "index.js",
   "bin": {
@@ -66,6 +66,10 @@
   ],
   "author": "GoDaddy Operating Company, LLC",
   "license": "MIT",
+  "files": [
+    "bin",
+    "src"
+  ],
   "dependencies": {
     "cli-table3": "^0.5.0",
     "editor2": "^1.0.3",
