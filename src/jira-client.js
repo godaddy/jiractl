@@ -8,19 +8,23 @@ const debug = {
 };
 
 let sessionCookie;
+let authmode = 'basic';
 
 async function getRequestOptions() {
-  if (!sessionCookie) {
-    sessionCookie = await getSessionCookie();
-  }
-
   const opts = {
     json: true,
     followAllRedirects: true,
-    headers: {
-      Cookie: sessionCookie
-    }
-  };
+    headers: {}
+  }
+
+  if (authmode === 'cookie' && !sessionCookie) {
+    sessionCookie = await getSessionCookie();
+    opts.headers.Cookie = sessionCookie;
+  } else if (authmode === 'basic') {
+    const { username, password } = getCurrentContext();
+    const encoded = Buffer.from(`${username}:${password}`).toString('base64');
+    opts.headers.Authorization = `Basic ${encoded}`;
+  }
 
   debug.verbose('HTTP Options', opts);
   return opts;
