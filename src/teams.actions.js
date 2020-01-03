@@ -1,7 +1,7 @@
 const { makeGetRequest } = require('./jira-client');
 
 async function getTeams({ id }) {
-  const teams = await makeGetRequest('board?projectKeyOrId=' + id);
+  const teams = await makeGetRequest('board', 'agile/1.0', { query: { projectKeyOrId: id } });
   return teams.values;
 }
 

@@ -8,7 +8,7 @@ const orderFilters = /ORDER BY createdDate DESC|ORDER BY Rank ASC|ORDER BY Rank/
 const mapPath = path.join(__dirname, '../.jiractl-team-map.json');
 
 async function getBoardDetails(boardId) {
-  return await makeGetRequest(`rapidviewconfig/editmodel.json?rapidViewId=${ boardId }`, 'greenhopper/1.0');
+  return await makeGetRequest('rapidviewconfig/editmodel.json', 'greenhopper/1.0', { query: { rapidViewId: boardId } });
 }
 
 async function writeTeamsData(id) {
