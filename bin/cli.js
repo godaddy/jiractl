@@ -105,6 +105,13 @@ async function main() {
 
 main()
   .catch(err => {
-    console.error(err);
+    if (err.statusCode) {
+      console.error(Object.keys(err));
+      console.error(`${err.name}: ${err.statusCode}`);
+    }
+
+    // TODO: make this a debug log
+    // console.error(err.message);
+
     process.exit(1);
   });
