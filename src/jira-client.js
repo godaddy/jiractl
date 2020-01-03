@@ -1,5 +1,11 @@
 const rp = require('request-promise');
+const diagnostics = require('diagnostics');
 const { getCurrentContext } = require('./config');
+
+const debug = {
+  http: diagnostics('jiractl:http'),
+  verbose: diagnostics('jiractl:verbose')
+};
 
 let sessionCookie;
 
@@ -16,8 +22,7 @@ async function getRequestOptions() {
     }
   };
 
-  // TODO: Make this a debug log output
-  // console.dir(opts);
+  debug.verbose('HTTP Options', opts);
   return opts;
 }
 
@@ -37,7 +42,7 @@ async function getSessionCookie({
     followAllRedirects: true
   });
 
-  console.log(`New JIRA Session: ${session.name}=${session.value}`)
+  debug.verbose(`New JIRA Session: ${session.name}=${session.value}`)
   return `${session.name}=${session.value}`;
 }
 
@@ -46,11 +51,11 @@ function makeJiraUri({ baseUri = getCurrentContext().uri, uri } = {}) {
 }
 
 async function makeQuery({ jql, selector = (results) => results.total } = {}) {
-  const points = getCurrentContext().points;
+  const { points } = getCurrentContext();
 
   const opts = await getRequestOptions();
   const uri = makeJiraUri({ uri: 'api/2/search' });
-  console.dir(`POST ${uri}`);
+  debug.http(`POST ${uri}`);
 
   // TODO: move to fetch from rp
   const response = await rp(Object.assign({}, opts, {
@@ -65,15 +70,13 @@ async function makeQuery({ jql, selector = (results) => results.total } = {}) {
     }
   }));
 
-  // TODO: Make this a debug log output
-  // console.dir(response);
   return selector(response);
 }
 
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
   const opts = await getRequestOptions();
   const uri = makeJiraUri({ uri: `${api}/${url}` });
-  console.dir(`GET ${uri}`);
+  debug.http(`GET ${uri}`);
 
   return await rp(Object.assign({}, opts, options, {
     method: 'GET',
@@ -84,7 +87,7 @@ async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
 async function makePutRequest(url, api = 'agile/1.0', data = {}) {
   const opts = await getRequestOptions();
   const uri = makeJiraUri({ uri: `${api}/${url}` });
-  console.dir(`PUT ${uri}`);
+  debug.http(`PUT ${uri}`);
 
   return await rp(Object.assign({}, opts, {
     method: 'PUT',

@@ -68,6 +68,7 @@
   "license": "MIT",
   "dependencies": {
     "cli-table3": "^0.5.0",
+    "diagnostics": "^2.0.2",
     "editor2": "^1.0.3",
     "make-promises-safe": "^5.1.0",
     "opn": "^6.0.0",
