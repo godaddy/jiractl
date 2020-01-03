@@ -54,7 +54,9 @@ async function getSessionCookie({
 function makeJiraUri({ baseUri = getCurrentContext().uri, uri, query } = {}) {
   const fullUri = new URL(`/rest/${ uri }`, `${baseUri}`);
   if (query) {
-    fullUri.search = new URLSearchParams(query);
+    Object.entries(query).forEach(([key, value]) => {
+      fullUri.searchParams.set(key, value);
+    });
   }
 
   const uriStr = format(fullUri);
