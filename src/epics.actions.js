@@ -1,11 +1,15 @@
-const jiraClient = require('./jira-client');
-const { makeGetRequest } = jiraClient;
 const { getTeamId } = require('./team-data');
 const { describe: describeEpic } = require('./epic.actions');
+const jiraClient = require('./jira-client');
+const { makeGetRequest } = jiraClient;
 
 async function getEpics({ team }) {
   const id = getTeamId(team);
-  const result = await makeGetRequest(`board/${ id }/epic`);
+
+  const result = await makeGetRequest(`board/${ id }/epic`, 'agile/1.0', {
+    query: { startAt: 50 }
+  });
+
   const epics = result.values.filter(epic => !epic.done);
   return { epics };
 }

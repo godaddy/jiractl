@@ -1,3 +1,4 @@
+const { format, URL, URLSearchParams } = require('url');
 const rp = require('request-promise');
 const diagnostics = require('diagnostics');
 const { getCurrentContext } = require('./config');
@@ -50,8 +51,15 @@ async function getSessionCookie({
   return `${session.name}=${session.value}`;
 }
 
-function makeJiraUri({ baseUri = getCurrentContext().uri, uri } = {}) {
-  return `${baseUri}/rest/${ uri }`;
+function makeJiraUri({ baseUri = getCurrentContext().uri, uri, query } = {}) {
+  const fullUri = new URL(`/rest/${ uri }/`, `${baseUri}`);
+  if (query) {
+    fullUri.search = new URLSearchParams(query);
+  }
+
+  const uriStr = format(fullUri);
+  debug.verbose('Make URI', uriStr);
+  return uriStr;
 }
 
 async function makeQuery({ jql, selector = (results) => results.total } = {}) {
@@ -79,7 +87,7 @@ async function makeQuery({ jql, selector = (results) => results.total } = {}) {
 
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
   const opts = await getRequestOptions();
-  const uri = makeJiraUri({ uri: `${api}/${url}` });
+  const uri = makeJiraUri({ uri: `${api}/${url}`, query: options.query });
   debug.http(`GET ${uri}`);
 
   return await rp(Object.assign({}, opts, options, {
