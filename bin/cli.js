@@ -15,6 +15,8 @@ const sprintsActions = require('../src/sprints.actions');
 const teamActions = require('../src/team.actions');
 const teamsActions = require('../src/teams.actions');
 
+const debug = require('diagnostics')('jiractl:cli');
+
 const opn = require('opn');
 const tabtab = require('tabtab');
 const argv = require('yargs')
@@ -90,10 +92,13 @@ async function main() {
       action: handler,
       formatters: {
         json: formatters.json[context],
-        console: formatters.console[context]
+        console: formatters.console[context],
+        raw: formatters.raw
       }
     };
   }
+
+  debug('Starting CLI:', { context, action, handler, argv });
 
   try {
     const output = await handler.action(argv);
@@ -108,10 +113,11 @@ main()
     if (err.statusCode) {
       console.error(Object.keys(err));
       console.error(`${err.name}: ${err.statusCode}`);
+      // TODO: make this a debug log
+      // console.error(err.message);
+    } else {
+      console.error(err);
     }
-
-    // TODO: make this a debug log
-    // console.error(err.message);
 
     process.exit(1);
   });

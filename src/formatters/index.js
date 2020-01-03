@@ -171,9 +171,14 @@ const jsonFormatters = {
   teams: jsonFormatter
 };
 
+const rawFormatter = function (output) {
+  console.log(JSON.stringify(output, null, 2));
+}
+
 const formatters = {
   console: consoleFormatters,
-  json: jsonFormatters
+  json: jsonFormatters,
+  raw: rawFormatter
 };
 
 module.exports = formatters;
