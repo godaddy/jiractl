@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Make. Promises. Safe.
+require('make-promises-safe');
+
 const configActions = require('../src/config.actions');
 const epicActions = require('../src/epic.actions');
 const epicsActions = require('../src/epics.actions');
