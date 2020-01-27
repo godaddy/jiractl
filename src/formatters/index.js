@@ -46,10 +46,9 @@ function consoleEpicsFormatter(epicsAndStories) {
         summary: epic.summary || epic.fields.summary
       };
 
-      if (epic.completedPoints && epic.totalPoints) {
-        summary['Completed/Total points'] = `${epic.completedPoints}/${epic.totalPoints}`;
-      }
-
+      summary['Completed'] = ( epic.completedPoints ? `${epic.completedPoints}` : '-');
+      summary['Total points'] = ( epic.totalPoints ? `${epic.totalPoints}` : '-');
+      
       return summary;
     }));
 
@@ -62,7 +61,9 @@ function consoleEpicsFormatter(epicsAndStories) {
           key: story.key,
           status: story.fields.status.name,
           summary: story.fields.summary,
-          points: story.fields[points] || '-'
+          points: story.fields[points] || '-',
+          components: story.fields.components.name || '-',
+          sprint: (story.fields.sprint ? story.fields.sprint.name : 'N/A')
         }))
       );
     }
@@ -85,7 +86,15 @@ function consoleSprintFormatter(sprint) {
     key: i.key,
     status: i.fields.status.name,
     summary: i.fields.summary,
-    points: i.fields[points] || '-'
+    points: i.fields[points] || '-',
+    epic: i.fields.epic.key
+  })));
+  console.log();
+  console.log(`Epic Summary:`);
+  logTable(sprint.epics.map(i => ({
+    summary: i.displayName,
+    epic: i.key,
+    points: i.points
   })));
 }
 

@@ -1,5 +1,5 @@
 const { getTeamId } = require('./team-data');
-const { describe: describeEpic } = require('./epic.actions');
+const { describe: describeEpic, status: statusEpic } = require('./epic.actions');
 const Paginator = require('./data/paginator');
 const jiraClient = require('./jira-client');
 const { makeGetRequest } = jiraClient;
@@ -33,8 +33,21 @@ async function describeEpics({ team }) {
   return epicsAndStories;
 }
 
+async function statusEpics({ team }) {
+  const { epics } = await getEpics({ team });
+  const epicsAndStories = await Promise.all(
+    epics.map(async epic => {
+      const epicData = await statusEpic({ id: epic.key });
+      return epicData;
+    })
+  );
+
+  return epicsAndStories;
+}
+
 module.exports = {
   get: getEpics,
   describe: describeEpics,
+  status: statusEpics,
   create: () => {}
 };

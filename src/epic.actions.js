@@ -1,5 +1,4 @@
 const editContents = require('./edit-contents');
-
 const { formatBody, parseBody } = require('./formatters/table');
 const jiraClient = require('./jira-client');
 const { makeQuery, makeGetRequest, makePutRequest } = jiraClient;
@@ -25,6 +24,18 @@ async function describeEpic({ id }) {
   return {
     ...epic,
     stories
+  };
+}
+
+async function statusEpic({ id }) {
+  const epic = await getEpic({ id });
+  const stories = (await makeGetRequest(`epic/${ id }/issue`)).issues;
+
+  epic.epics[0].totalPoints = getTotalPoints(stories);
+  epic.epics[0].completedPoints = getCompletedPoints(stories);
+
+  return {
+    ...epic
   };
 }
 
@@ -77,6 +88,7 @@ async function edit({ id }) {
 module.exports = {
   get: getEpic,
   describe: describeEpic,
+  status: statusEpic,
   edit: {
     action: edit,
     formatters: {
