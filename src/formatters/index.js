@@ -94,7 +94,11 @@ function consoleSprintFormatter(sprint) {
   logTable(sprint.epics.map(i => ({
     summary: i.displayName,
     epic: i.key,
-    points: i.points
+    points: i.points,
+    total: i.total,
+    completed: i.completed,
+    percent: ((i.completed/i.total)*100).toFixed(2)
+
   })));
 }
 

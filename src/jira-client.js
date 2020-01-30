@@ -91,7 +91,6 @@ async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
   const opts = await getRequestOptions();
   const uri = makeJiraUri({ uri: `${api}/${url}`, query: options.query });
   debug.http(`GET ${uri}`);
-
   return await rp(Object.assign({}, opts, options, {
     method: 'GET',
     uri
