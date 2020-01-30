@@ -95,8 +95,8 @@ function consoleSprintFormatter(sprint) {
     summary: i.displayName,
     epic: i.key,
     points: i.points,
-    total: i.total,
     completed: i.completed,
+    total: i.total,
     percent: ((i.completed/i.total)*100).toFixed(2)
 
   })));
