@@ -23,6 +23,7 @@ async function writeTeamsData(id) {
       epicFilter
     };
   });
+
   const teamDetails = await Promise.all(detailsPromises);
   let config = {};
   try {
@@ -32,6 +33,7 @@ async function writeTeamsData(id) {
       throw err;
     }
   }
+
   teamDetails.forEach(team => {
     config[team.name] = { ...team };
   });

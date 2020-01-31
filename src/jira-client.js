@@ -90,11 +90,13 @@ async function makeQuery({ jql, selector = (results) => results.total } = {}) {
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
   const opts = await getRequestOptions();
   const uri = makeJiraUri({ uri: `${api}/${url}`, query: options.query });
-  debug.http(`GET ${uri}`);
-  return await rp(Object.assign({}, opts, options, {
+  const fullOpts = Object.assign({}, opts, options, {
     method: 'GET',
     uri
-  }));
+  });
+
+  debug.http(`GET ${uri}`, fullOpts);
+  return await rp(fullOpts);
 }
 
 async function makePutRequest(url, api = 'agile/1.0', data = {}) {
