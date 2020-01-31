@@ -79,17 +79,21 @@ function consoleSprintFormatter(sprint) {
     ['Completed/Total points']: `${getCompletedPoints(sprint.issues)}/${getTotalPoints(sprint.issues)}`
   }]);
   console.log();
-  console.log(`Members: ${sprint.members.join(', ')}`);
-  console.log();
-  console.log('Issues:');
-  logTable(sprint.issues.map(i => ({
-    key: i.key,
-    status: i.fields.status.name,
-    summary: i.fields.summary,
-    points: i.fields[points] || '-',
-    epic: i.fields.epic.key
-  })));
-  console.log();
+
+  if (sprint.members){
+    console.log(`Members: ${sprint.members.join(', ')}`);
+    console.log();    
+    console.log('Issues:');
+    logTable(sprint.issues.map(i => ({
+      key: i.key,
+      status: i.fields.status.name,
+      summary: i.fields.summary,
+      points: i.fields[points] || '-',
+      epic: i.fields.epic.key
+    })));
+    console.log();
+  }
+
   console.log(`Epic Summary:`);
   logTable(sprint.epics.map(i => ({
     summary: i.displayName,
@@ -98,7 +102,6 @@ function consoleSprintFormatter(sprint) {
     completed: i.completed,
     total: i.total,
     percent: ((i.completed/i.total)*100).toFixed(2)
-
   })));
 }
 

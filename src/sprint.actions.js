@@ -27,11 +27,28 @@ async function describe({ team, id }) {
   };
 }
 
+async function status({ team, id }) {
+  const teamId = getTeamId(team);
+  const sprint = await client.makeGetRequest(`sprint/${ id }`);
+  const issues = await client.makeGetRequest(`board/${ teamId }/sprint/${ id }/issue`);
+  const epics = await getIssueEpics(issues);
+
+  return {
+    id: sprint.id,
+    name: sprint.name,
+    startDate: sprint.startDate,
+    endDate: sprint.endDate,
+    state: sprint.state,
+    issues: issues.issues,
+    epics: epics
+  };
+}
+
 async function getIssueEpics(epicIssues) {
   const points = getCurrentContext().points;
   // map epic issues - distinct epics to total epic issue points in sprint
   let mappedPoints = epicIssues.issues.reduce(function(map, issue) {    
-    // TO-DO: output error if issue does not have an epic && convert to single reduce function
+    // TO-DO: handle error if issue does not have an epic && convert to single reduce function
     let key = issue.fields.epic.key
     // let name = issue.fields.epic.name || issue.fields.epic.fields.name
     let epicPoints = +issue.fields[points]
@@ -74,5 +91,6 @@ async function getIssueEpics(epicIssues) {
 module.exports = {
   get: describe,
   describe,
+  status,
   create: () => {}
 };
