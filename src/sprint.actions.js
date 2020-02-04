@@ -1,6 +1,5 @@
-const { describe: describeEpic, status: statusEpic } = require('./epic.actions');
+const { status: statusEpic } = require('./epic.actions');
 const { getTeamId } = require('./team-data');
-// const { statusEpic } = require('./epic.actions')
 const client = require('./jira-client');
 const { getCurrentContext } = require('./config');
 const { getCompletedPoints, getTotalPoints } = require('./point-reducers');
@@ -22,7 +21,7 @@ async function describe({ team, id }) {
     endDate: sprint.endDate,
     state: sprint.state,
     issues: issues.issues,
-    epics: epics,
+    epics,
     members
   };
 }
@@ -40,12 +39,12 @@ async function status({ team, id }) {
     endDate: sprint.endDate,
     state: sprint.state,
     issues: issues.issues,
-    epics: epics
+    epics
   };
 }
 
 async function getIssueEpics(epicIssues) {
-  const points = getCurrentContext().points;
+  const { points } = getCurrentContext();
   // Summarize epic issues - distinct epics to total epic issue points in sprint & summary
   let epicSummary = epicIssues.issues.reduce(function(map, issue) {    
     // TO-DO: handle error if issue does not have an epic
@@ -61,12 +60,12 @@ async function getIssueEpics(epicIssues) {
 
   // final output object w/ all needed fields
   const array = await Promise.all(
-    Object.keys(epicSummary).map(async function(name) {
+    Object.entries(epicSummary).map(async function([name, value]) {
       let epicData = await statusEpic({ id: name });
       return {
         key: name,
-        displayName: epicSummary[name].summary,
-        points: epicSummary[name].sprintPoints,
+        displayName: value.summary,
+        points: value.sprintPoints,
         total: epicData.epics[0].totalPoints,
         completed: epicData.epics[0].completedPoints,
       }

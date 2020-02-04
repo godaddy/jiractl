@@ -36,11 +36,10 @@ async function describeEpics({ team }) {
 async function statusEpics({ team }) {
   const { epics } = await getEpics({ team });
   const epicsAndStories = await Promise.all(
-    epics.map(async epic => {
-      const epicData = await statusEpic({ id: epic.key });
-      return epicData;
-    })
+    epics.map(async epic => statusEpic({ id: epic.key }))
   );
+
+  
 
   return epicsAndStories;
 }

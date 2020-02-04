@@ -40,7 +40,6 @@ async function getSprints({ team }, query = {}) {
 
 async function getVelocities(teamId, query) {
   const teamVelocities =  await makeGetRequest('rapid/charts/velocity?rapidViewId=' + teamId, 'greenhopper/1.0', { query });
-  // console.log('velocity: ' + JSON.stringify(teamVelocities));
   return teamVelocities;
 }
 
