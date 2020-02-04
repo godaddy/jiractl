@@ -48,7 +48,7 @@ async function getIssueEpics(epicIssues) {
   const points = getCurrentContext().points;
   // Summarize epic issues - distinct epics to total epic issue points in sprint & summary
   let epicSummary = epicIssues.issues.reduce(function(map, issue) {    
-    // TO-DO: handle error if issue does not have an epic && convert to single reduce function
+    // TO-DO: handle error if issue does not have an epic
     const key = issue.fields.epic.key;
     const sprintPoints = +issue.fields[points];
 
