@@ -46,8 +46,8 @@ function consoleEpicsFormatter(epicsAndStories) {
         summary: epic.summary || epic.fields.summary
       };
 
-      summary['Completed'] = ( epic.completedPoints ? `${epic.completedPoints}` : '-');
-      summary['Total points'] = ( epic.totalPoints ? `${epic.totalPoints}` : '-');
+      summary['Completed'] = epic.completedPoints || '-';
+      summary['Total points'] = epic.totalPoints || '-';
       
       return summary;
     }));

@@ -16,7 +16,12 @@ async function getEpic({ id }) {
 
 async function describeEpic({ id }) {
   const { epics } = await getEpic({ id });
-  const stories = (await makeGetRequest(`epic/${ id }/issue`)).issues;
+  const epicIssues = await makeGetRequest(`epic/${id}/issue`);
+  if (!epicIssues) {
+    throw new Error(`No issues returned for: ${id}`);
+  }
+   
+  const stories = epicIssues.issues;
 
   epics[0].totalPoints = getTotalPoints(stories);
   epics[0].completedPoints = getCompletedPoints(stories);
@@ -29,7 +34,12 @@ async function describeEpic({ id }) {
 
 async function statusEpic({ id }) {
   const epic = await getEpic({ id });
-  const stories = (await makeGetRequest(`epic/${ id }/issue`)).issues;
+  const epicIssues = await makeGetRequest(`epic/${id}/issue`);
+  if (!epicIssues) {
+    throw new Error(`No issues returned for: ${id}`);
+  }
+   
+  const stories = epicIssues.issues;
 
   epic.epics[0].totalPoints = getTotalPoints(stories);
   epic.epics[0].completedPoints = getCompletedPoints(stories);
