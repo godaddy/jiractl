@@ -20,7 +20,7 @@ async function describeEpic({ id }) {
   if (!epicIssues) {
     throw new Error(`No issues returned for: ${id}`);
   }
-   
+
   const stories = epicIssues.issues;
 
   epics[0].totalPoints = getTotalPoints(stories);
@@ -38,7 +38,7 @@ async function statusEpic({ id }) {
   if (!epicIssues) {
     throw new Error(`No issues returned for: ${id}`);
   }
-   
+
   const stories = epicIssues.issues;
 
   epic.epics[0].totalPoints = getTotalPoints(stories);

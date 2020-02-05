@@ -18,7 +18,7 @@ module.exports = class Paginator {
   async fetchAll() {
     let isLast = false;
     let startAt = 0;
-    let values = [];
+    const values = [];
 
     while (!isLast) {
       const result = await this.nextPage(startAt, values);
@@ -29,4 +29,4 @@ module.exports = class Paginator {
 
     return values;
   }
-}
+};

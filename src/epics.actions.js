@@ -39,7 +39,7 @@ async function statusEpics({ team }) {
     epics.map(async epic => statusEpic({ id: epic.key }))
   );
 
-  
+
 
   return epicsAndStories;
 }

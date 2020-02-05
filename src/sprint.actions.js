@@ -46,7 +46,7 @@ async function status({ team, id }) {
 async function getIssueEpics(epicIssues) {
   const { points } = getCurrentContext();
   // Summarize epic issues - distinct epics to total epic issue points in sprint & summary
-  let epicSummary = epicIssues.issues.reduce(function(map, issue) {    
+  const epicSummary = epicIssues.issues.reduce(function (map, issue) {
     // TO-DO: handle error if issue does not have an epic
     const key = issue.fields.epic.key;
     const sprintPoints = +issue.fields[points];
@@ -60,15 +60,15 @@ async function getIssueEpics(epicIssues) {
 
   // final output object w/ all needed fields
   const array = await Promise.all(
-    Object.entries(epicSummary).map(async function([name, value]) {
-      let epicData = await statusEpic({ id: name });
+    Object.entries(epicSummary).map(async function ([name, value]) {
+      const epicData = await statusEpic({ id: name });
       return {
         key: name,
         displayName: value.summary,
         points: value.sprintPoints,
         total: epicData.epics[0].totalPoints,
-        completed: epicData.epics[0].completedPoints,
-      }
+        completed: epicData.epics[0].completedPoints
+      };
     })
   );
 

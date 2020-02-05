@@ -31,10 +31,10 @@ async function getSprints({ team }, query = {}) {
 
   const sprints = await paginator.fetchAll();
   return sprints.sort((a, b) => b.id - a.id)
-      .map(sprint => Object.assign({}, sprint, {
-        velocity: velocities[sprint.id] ? velocities[sprint.id].completed.value : 0,
-        estimated: velocities[sprint.id] ? velocities[sprint.id].estimated.value : 0
-      }));
+    .map(sprint => Object.assign({}, sprint, {
+      velocity: velocities[sprint.id] ? velocities[sprint.id].completed.value : 0,
+      estimated: velocities[sprint.id] ? velocities[sprint.id].estimated.value : 0
+    }));
 
 }
 

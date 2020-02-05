@@ -9,14 +9,14 @@ const debug = {
 };
 
 let sessionCookie;
-let authmode = 'basic';
+const authmode = 'basic';
 
 async function getRequestOptions() {
   const opts = {
     json: true,
     followAllRedirects: true,
     headers: {}
-  }
+  };
 
   if (authmode === 'cookie' && !sessionCookie) {
     sessionCookie = await getSessionCookie();
@@ -47,7 +47,7 @@ async function getSessionCookie({
     followAllRedirects: true
   });
 
-  debug.verbose(`New JIRA Session: ${session.name}=${session.value}`)
+  debug.verbose(`New JIRA Session: ${session.name}=${session.value}`);
   return `${session.name}=${session.value}`;
 }
 

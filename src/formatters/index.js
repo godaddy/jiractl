@@ -46,9 +46,9 @@ function consoleEpicsFormatter(epicsAndStories) {
         summary: epic.summary || epic.fields.summary
       };
 
-      summary['Completed'] = epic.completedPoints || '-';
+      summary.Completed = epic.completedPoints || '-';
       summary['Total points'] = epic.totalPoints || '-';
-      
+
       return summary;
     }));
 
@@ -80,9 +80,9 @@ function consoleSprintFormatter(sprint) {
   }]);
   console.log();
 
-  if (sprint.members){
+  if (sprint.members) {
     console.log(`Members: ${sprint.members.join(', ')}`);
-    console.log();    
+    console.log();
     console.log('Issues:');
     logTable(sprint.issues.map(i => ({
       key: i.key,
@@ -101,7 +101,7 @@ function consoleSprintFormatter(sprint) {
     points: i.points,
     completed: i.completed,
     total: i.total,
-    percent: ((i.completed/i.total)*100).toFixed(2)
+    percent: ((i.completed / i.total) * 100).toFixed(2)
   })));
 }
 
@@ -189,7 +189,7 @@ const jsonFormatters = {
 
 const rawFormatter = function (output) {
   console.log(JSON.stringify(output, null, 2));
-}
+};
 
 const formatters = {
   console: consoleFormatters,
