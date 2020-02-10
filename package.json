@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint": "eslint --config .eslintrc.js --fix src/ test/ bin/",
+    "posttest": "npm run lint",
     "test": "npm run lint && mocha --recursive",
     "uninstall": "./bin/cli.js uninstall-completion"
   },
