@@ -21,6 +21,13 @@ async function getEpics({ team }) {
   return { epics };
 }
 
+
+/**
+ * All epic details and corresponding stories for all epics associated to a team
+ * w/ total and completed points
+ * @param  {string} team - The team alias or id, ie: "foo" or "1234"
+ * @returns {obj} epicsAndStories - The team epics and their associated stories
+ */
 async function describeEpics({ team }) {
   const { epics } = await getEpics({ team });
   const epicsAndStories = await Promise.all(
@@ -33,15 +40,18 @@ async function describeEpics({ team }) {
   return epicsAndStories;
 }
 
+/**
+ * Simplified epic with total and completed points for all epics associated to a team
+ * @param  {string} team - The team alias or id, ie: "foo" or "1234"
+ * @returns {obj} mappedEpics - The team epics and their associated additional details
+ */
 async function statusEpics({ team }) {
   const { epics } = await getEpics({ team });
-  const epicsAndStories = await Promise.all(
+  const mappedEpics = await Promise.all(
     epics.map(async epic => statusEpic({ id: epic.key }))
   );
 
-
-
-  return epicsAndStories;
+  return mappedEpics;
 }
 
 module.exports = {

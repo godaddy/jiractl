@@ -2,7 +2,6 @@ const { status: statusEpic } = require('./epic.actions');
 const { getTeamId } = require('./team-data');
 const client = require('./jira-client');
 const { getCurrentContext } = require('./config');
-const { getCompletedPoints, getTotalPoints } = require('./point-reducers');
 
 
 async function describe({ team, id }) {
@@ -26,6 +25,13 @@ async function describe({ team, id }) {
   };
 }
 
+/**
+ * Returns the simplfied details for a single sprint. This will not output the
+ * members or the issues (issues included in output for total & completed point values).
+ * @param  {string} team - The team alias or id
+ * @param  {string} id - The sprint id
+ * @returns {array} sprintStatus - Summarized list of sprint details.
+ */
 async function status({ team, id }) {
   const teamId = getTeamId(team);
   const sprint = await client.makeGetRequest(`sprint/${ id }`);
@@ -43,6 +49,12 @@ async function status({ team, id }) {
   };
 }
 
+/**
+ * Takes a list of issues for a sprint, groups by epic, and outputs the summary of
+ * distinct epics with their corresponding sprint, total and currently completed points.
+ * @param  {obj} epicIssues - The list of issues for a sprint.
+ * @returns {array} issueEpics - Summarized epics with sprint, total and completed points.
+ */
 async function getIssueEpics(epicIssues) {
   const { points } = getCurrentContext();
   // Summarize epic issues - distinct epics to total epic issue points in sprint & summary
@@ -59,7 +71,7 @@ async function getIssueEpics(epicIssues) {
   }, {});
 
   // final output object w/ all needed fields
-  const array = await Promise.all(
+  const issueEpics = await Promise.all(
     Object.entries(epicSummary).map(async function ([name, value]) {
       const epicData = await statusEpic({ id: name });
       return {
@@ -72,7 +84,7 @@ async function getIssueEpics(epicIssues) {
     })
   );
 
-  return array;
+  return issueEpics;
 }
 
 

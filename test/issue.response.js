@@ -54,7 +54,7 @@ module.exports = {
       key: 'GX',
       name: 'GoDaddy Experience',
       avatarUrls: {},
-      projectCategory: {}},
+      projectCategory: {} },
   resolutiondate: null,
   watches:
     { self: 'https://jira.com/rest/api/2/issue/GX-123/watchers',
@@ -85,7 +85,7 @@ module.exports = {
       iconUrl: 'https://jira.com/images/icons/statuses/generic.png',
       name: 'In Progress',
       id: '3',
-      statusCategory: {}},
+      statusCategory: {} },
   aggregatetimeestimate: null,
   creator:
     { self: 'https://jira.com/rest/api/2/user?username=bar',

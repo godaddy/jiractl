@@ -14,9 +14,16 @@ async function getEpic({ id }) {
   };
 }
 
+/**
+ * All epic details and corresponding stories
+ * w/ total and completed points
+ * @param  {string} id - The epic key, ie: "FOO-1234"
+ * @returns {obj} epics, stories - The epic and associated stories
+ */
 async function describeEpic({ id }) {
-  const { epics } = await getEpic({ id });
-  const epicIssues = await makeGetRequest(`epic/${id}/issue`);
+  const [{ epics }, epicIssues] = await Promise.all([
+    getEpic({ id }),
+    makeGetRequest(`epic/${id}/issue`)]);
   if (!epicIssues) {
     throw new Error(`No issues returned for: ${id}`);
   }
@@ -32,9 +39,15 @@ async function describeEpic({ id }) {
   };
 }
 
+/**
+ * Simplified epic with total and completed points
+ * @param  {string} id - The epic key, ie: "FOO-1234"
+ * @returns {obj} epic - The epic and additional details
+ */
 async function statusEpic({ id }) {
-  const epic = await getEpic({ id });
-  const epicIssues = await makeGetRequest(`epic/${id}/issue`);
+  const [epic, epicIssues] = await Promise.all([
+    getEpic({ id }),
+    makeGetRequest(`epic/${id}/issue`)]);
   if (!epicIssues) {
     throw new Error(`No issues returned for: ${id}`);
   }

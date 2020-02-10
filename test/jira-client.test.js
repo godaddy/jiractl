@@ -19,7 +19,7 @@ describe('src.jira-client', () => {
     it('gets the session cookie', async () => {
       nock(uri)
         .post('/rest/auth/1/session')
-        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' }});
+        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' } });
       const cookie = await client.getSessionCookie(context);
       expect(cookie).to.equal('cookie=chocolate-chip');
     });
@@ -55,7 +55,7 @@ describe('src.jira-client', () => {
     it('gets request options', async () => {
       nock(uri)
         .post('/rest/auth/1/session')
-        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' }});
+        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' } });
       const options = await client.getRequestOptions();
       expect(options).to.eql({
         json: true,
@@ -69,7 +69,7 @@ describe('src.jira-client', () => {
     beforeEach(() => {
       nock(uri)
         .post('/rest/auth/1/session')
-        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' }});
+        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' } });
     });
 
     it('makes a get request', async () => {
@@ -98,7 +98,7 @@ describe('src.jira-client', () => {
     beforeEach(() => {
       nock(uri)
         .post('/rest/auth/1/session')
-        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' }});
+        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' } });
     });
 
     it('makes a put request', async () => {
@@ -127,7 +127,7 @@ describe('src.jira-client', () => {
     beforeEach(() => {
       nock(uri)
         .post('/rest/auth/1/session')
-        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' }});
+        .reply(200, { session: { name: 'cookie', value: 'chocolate-chip' } });
     });
 
     it('makes a jql query and applies the selector', async () => {
