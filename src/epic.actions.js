@@ -45,19 +45,8 @@ async function describeEpic({ id }) {
  * @returns {obj} epic - The epic and additional details
  */
 async function statusEpic({ id }) {
-  const [epic, epicIssues] = await Promise.all([
-    getEpic({ id }),
-    makeGetRequest(`epic/${id}/issue`)]);
-  if (!epicIssues) {
-    throw new Error(`No issues returned for: ${id}`);
-  }
-
-  const stories = epicIssues.issues;
-
-  epic.epics[0].totalPoints = getTotalPoints(stories);
-  epic.epics[0].completedPoints = getCompletedPoints(stories);
-
-  return epic || {};
+  const { epics = {} }  = await describeEpic({ id });
+  return { epics };
 }
 
 async function edit({ id }) {
