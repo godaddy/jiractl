@@ -10,11 +10,11 @@ async function getSprints({ team }, query = {}) {
 
   const paginator = new Paginator({
     async fetchPage(query) {
-      // TODO (indexzero): support other query string params (startAt, maxResults)
+      // TODO: support other query string params (startAt, maxResults)
       // See: https://docs.atlassian.com/jira-software/REST/7.0.4/#agile/1.0/board/{boardId}/sprint
 
-      // TODO (indexzero): make state configurable)
-      const state = 'active,future';
+      // TODO: make state configurable
+      const state = 'active,future,closed';
 
       return await makeGetRequest(`board/${ teamId }/sprint`, 'agile/1.0', {
         query: {
