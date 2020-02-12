@@ -38,8 +38,13 @@ async function getSprints({ team }, query = {}) {
 
 }
 
-async function getVelocities(teamId, query) {
-  const teamVelocities =  await makeGetRequest('rapid/charts/velocity?rapidViewId=' + teamId, 'greenhopper/1.0', { query });
+async function getVelocities(teamId, query = {}) {
+  const teamVelocities =  await makeGetRequest('rapid/charts/velocity', 'greenhopper/1.0', {
+    query: {
+      rapidViewId: teamId,
+      ...query
+    }
+  });
   return teamVelocities;
 }
 

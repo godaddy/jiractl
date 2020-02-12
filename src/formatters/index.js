@@ -62,7 +62,6 @@ function consoleEpicsFormatter(epicsAndStories) {
           status: story.fields.status.name,
           summary: story.fields.summary,
           points: story.fields[points] || '-',
-          components: story.fields.components.name || '-',
           sprint: (story.fields.sprint ? story.fields.sprint.name : 'N/A')
         }))
       );
@@ -99,9 +98,9 @@ function consoleSprintFormatter(sprint) {
     summary: i.displayName,
     epic: i.key,
     points: i.points,
+    percent: ((i.completed / i.total) * 100).toFixed(2),
     completed: i.completed,
-    total: i.total,
-    percent: ((i.completed / i.total) * 100).toFixed(2)
+    total: i.total
   })));
 }
 
