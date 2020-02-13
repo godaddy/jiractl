@@ -1,20 +1,35 @@
+const { format, URL, URLSearchParams } = require('url');
 const rp = require('request-promise');
+const diagnostics = require('diagnostics');
 const { getCurrentContext } = require('./config');
+
+const debug = {
+  http: diagnostics('jiractl:http'),
+  verbose: diagnostics('jiractl:verbose')
+};
 
 let sessionCookie;
 
 async function getRequestOptions() {
-  if (!sessionCookie) {
-    sessionCookie = await getSessionCookie();
-  }
-
-  return {
+  const context = getCurrentContext();
+  const { authmode = 'basic' } = context;
+  const opts = {
     json: true,
     followAllRedirects: true,
-    headers: {
-      Cookie: sessionCookie
-    }
+    headers: {}
   };
+
+  if (authmode === 'cookie' && !sessionCookie) {
+    sessionCookie = await getSessionCookie();
+    opts.headers.Cookie = sessionCookie;
+  } else if (authmode === 'basic') {
+    const { username, password } = context;
+    const encoded = Buffer.from(`${username}:${password}`).toString('base64');
+    opts.headers.Authorization = `Basic ${encoded}`;
+  }
+
+  debug.verbose('HTTP Options', opts);
+  return opts;
 }
 
 async function getSessionCookie({
@@ -22,33 +37,45 @@ async function getSessionCookie({
   username = getCurrentContext().username,
   password = getCurrentContext().password } = {}
 ) {
-  try {
-    const { session } = await rp({
-      method: 'POST',
-      uri: makeJiraUri({ baseUri, uri: 'auth/1/session' }),
-      body: {
-        username,
-        password
-      },
-      json: true,
-      followAllRedirects: true
-    });
-    return `${session.name}=${session.value}`;
-  } catch (err) {
-    throw new Error(err.error.errorMessages ? err.error.errorMessages.join(', ') : err.message);
-  }
+  const { session } = await rp({
+    method: 'POST',
+    uri: makeJiraUri({ baseUri, uri: 'auth/1/session' }),
+    body: {
+      username,
+      password
+    },
+    json: true,
+    followAllRedirects: true
+  });
+
+  debug.verbose(`New JIRA Session: ${session.name}=${session.value}`);
+  return `${session.name}=${session.value}`;
 }
 
-function makeJiraUri({ baseUri = getCurrentContext().uri, uri } = {}) {
-  return `${baseUri}/rest/${ uri }`;
+function makeJiraUri({ baseUri = getCurrentContext().uri, uri, query } = {}) {
+  const fullUri = new URL(`/rest/${ uri }`, `${baseUri}`);
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      fullUri.searchParams.set(key, value);
+    });
+  }
+
+  const uriStr = format(fullUri);
+  debug.verbose('Make URI', uriStr);
+  return uriStr;
 }
 
 async function makeQuery({ jql, selector = (results) => results.total } = {}) {
-  const points = getCurrentContext().points;
+  const { points } = getCurrentContext();
+  const opts = await getRequestOptions();
+  const uri = makeJiraUri({ uri: 'api/2/search' });
+  debug.http(`POST ${uri}`);
+
   try {
-    const response = await rp(Object.assign({}, await getRequestOptions(), {
+    // TODO: move to fetch from rp
+    const response = await rp(Object.assign({}, opts, {
       method: 'POST',
-      uri: makeJiraUri({ uri: 'api/2/search' }),
+      uri,
       body: {
         jql,
         startAt: 0,
@@ -59,30 +86,45 @@ async function makeQuery({ jql, selector = (results) => results.total } = {}) {
     }));
     return selector(response);
   } catch (err) {
-    throw new Error(err.error.errorMessages.join(', '));
+    throw err;
   }
 }
 
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
+  const opts = await getRequestOptions();
+  const uri = makeJiraUri({ uri: `${api}/${url}`, query: options.query });
+  const fullOpts = Object.assign({}, opts, options, {
+    method: 'GET',
+    uri
+  });
+
+  debug.http(`GET ${uri}`, fullOpts);
+
   try {
-    return await rp(Object.assign({}, await getRequestOptions(), options, {
-      method: 'GET',
-      uri: makeJiraUri({ uri: `${api}/${url}` })
-    }));
+    return await rp(fullOpts);
   } catch (err) {
-    throw new Error(err.error.errorMessages.join(', '));
+    //
+    // TODO [#28]: Check x-seraph-loginreason and x-authentication-denied-reason headers
+    // to see if a user is hellban from JIRA.
+    // console.dir(err.response.headers);
+    //
+    throw err;
   }
 }
 
 async function makePutRequest(url, api = 'agile/1.0', data = {}) {
+  const opts = await getRequestOptions();
+  const uri = makeJiraUri({ uri: `${api}/${url}` });
+  debug.http(`PUT ${uri}`);
+
   try {
-    return await rp(Object.assign({}, await getRequestOptions(), {
+    return await rp(Object.assign({}, opts, {
       method: 'PUT',
-      uri: makeJiraUri({ uri: `${api}/${url}` }),
+      uri,
       body: data
     }));
   } catch (err) {
-    throw new Error(err.error.errorMessages.join(', '));
+    throw err;
   }
 }
 

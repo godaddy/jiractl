@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Make. Promises. Safe.
+require('make-promises-safe');
+
 const configActions = require('../src/config.actions');
 const epicActions = require('../src/epic.actions');
 const epicsActions = require('../src/epics.actions');
@@ -11,6 +14,8 @@ const sprintActions = require('../src/sprint.actions');
 const sprintsActions = require('../src/sprints.actions');
 const teamActions = require('../src/team.actions');
 const teamsActions = require('../src/teams.actions');
+
+const debug = require('diagnostics')('jiractl:cli');
 
 const opn = require('opn');
 const tabtab = require('tabtab');
@@ -87,10 +92,13 @@ async function main() {
       action: handler,
       formatters: {
         json: formatters.json[context],
-        console: formatters.console[context]
+        console: formatters.console[context],
+        raw: formatters.raw
       }
     };
   }
+
+  debug('Starting CLI:', { context, action, handler, argv });
 
   try {
     const output = await handler.action(argv);
@@ -102,6 +110,13 @@ async function main() {
 
 main()
   .catch(err => {
-    console.error(err);
+    if (err.statusCode) {
+      console.error(`${err.name}: ${err.statusCode}`);
+      // TODO: make this a debug log
+      // console.error(err.message);
+    } else {
+      console.error(err);
+    }
+
     process.exit(1);
   });

@@ -44,7 +44,7 @@ const velocityData = {
   }],
   velocityStatEntries: {
     2: { estimated: { value: 51, text: '51.0' },
-	  completed: { value: 30, text: '30.0' }}
+	  completed: { value: 30, text: '30.0' } }
   }
 };
 

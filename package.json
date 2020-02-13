@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint": "eslint --config .eslintrc.js --fix src/ test/ bin/",
+    "posttest": "npm run lint",
     "test": "npm run lint && mocha --recursive",
     "uninstall": "./bin/cli.js uninstall-completion"
   },
@@ -68,9 +69,11 @@
   "license": "MIT",
   "dependencies": {
     "cli-table3": "^0.5.0",
+    "diagnostics": "^2.0.2",
     "editor2": "^1.0.3",
+    "make-promises-safe": "^5.1.0",
     "opn": "^6.0.0",
-    "readline-sync": "^1.4.9",
+    "prompts": "^2.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "tabtab": "^3.0.2",

@@ -31,7 +31,7 @@ describe('src.config', () => {
 
   describe('.addContext', () => {
     it('adds a context', () => {
-      config.saveConfig({ contexts: {}});
+      config.saveConfig({ contexts: {} });
       config.addContext({ context, username, password });
       expect(config.loadConfig()).to.eql(testConfig);
     });
@@ -74,7 +74,7 @@ describe('src.config', () => {
       });
       config.ensureConfig();
       expect(saveConfig.calledOnce).to.be.true;
-      expect(saveConfig.calledWithExactly({ contexts: {}})).to.be.true;
+      expect(saveConfig.calledWithExactly({ contexts: {} })).to.be.true;
     });
 
     it('doesn\'t save an initial config if a config already exists', () => {
@@ -89,7 +89,7 @@ describe('src.config', () => {
 
   describe('.loadConfig', () => {
     it('calls ensureConfig and loads che config file', () => {
-      const initialConfig = { contexts: {}};
+      const initialConfig = { contexts: {} };
       config.saveConfig(initialConfig);
       const ensureConfig = sinon.spy();
       config.__set__({

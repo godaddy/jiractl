@@ -1,5 +1,4 @@
 const editContents = require('./edit-contents');
-
 const { formatBody, parseBody } = require('./formatters/table');
 const jiraClient = require('./jira-client');
 const { makeQuery, makeGetRequest, makePutRequest } = jiraClient;
@@ -15,17 +14,39 @@ async function getEpic({ id }) {
   };
 }
 
+/**
+ * All epic details and corresponding stories
+ * w/ total and completed points
+ * @param  {string} id - The epic key, ie: "FOO-1234"
+ * @returns {obj} epics, stories - The epic and associated stories
+ */
 async function describeEpic({ id }) {
-  const epic = await getEpic({ id });
-  const stories = (await makeGetRequest(`epic/${ id }/issue`)).issues;
+  const [{ epics }, epicIssues] = await Promise.all([
+    getEpic({ id }),
+    makeGetRequest(`epic/${id}/issue`)]);
+  if (!epicIssues) {
+    throw new Error(`No issues returned for: ${id}`);
+  }
 
-  epic.epics[0].totalPoints = getTotalPoints(stories);
-  epic.epics[0].completedPoints = getCompletedPoints(stories);
+  const stories = epicIssues.issues;
+
+  epics[0].totalPoints = getTotalPoints(stories);
+  epics[0].completedPoints = getCompletedPoints(stories);
 
   return {
-    ...epic,
+    epics,
     stories
   };
+}
+
+/**
+ * Simplified epic with total and completed points
+ * @param  {string} id - The epic key, ie: "FOO-1234"
+ * @returns {obj} epic - The epic and additional details
+ */
+async function statusEpic({ id }) {
+  const { epics = {} }  = await describeEpic({ id });
+  return { epics };
 }
 
 async function edit({ id }) {
@@ -77,6 +98,7 @@ async function edit({ id }) {
 module.exports = {
   get: getEpic,
   describe: describeEpic,
+  status: statusEpic,
   edit: {
     action: edit,
     formatters: {

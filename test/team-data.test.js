@@ -6,7 +6,7 @@ describe('src.team-data', () => {
     const { getTeamId } = teamData;
 
     it('should map teamId against teamMap', () => {
-      const teamMap = { foo: { board: 2456 }};
+      const teamMap = { foo: { board: 2456 } };
 
       const teamId = getTeamId('foo', teamMap);
       expect(teamId).to.equal(2456);

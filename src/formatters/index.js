@@ -46,9 +46,8 @@ function consoleEpicsFormatter(epicsAndStories) {
         summary: epic.summary || epic.fields.summary
       };
 
-      if (epic.completedPoints && epic.totalPoints) {
-        summary['Completed/Total points'] = `${epic.completedPoints}/${epic.totalPoints}`;
-      }
+      summary.Completed = epic.completedPoints || '-';
+      summary['Total points'] = epic.totalPoints || '-';
 
       return summary;
     }));
@@ -62,7 +61,8 @@ function consoleEpicsFormatter(epicsAndStories) {
           key: story.key,
           status: story.fields.status.name,
           summary: story.fields.summary,
-          points: story.fields[points] || '-'
+          points: story.fields[points] || '-',
+          sprint: (story.fields.sprint ? story.fields.sprint.name : 'N/A')
         }))
       );
     }
@@ -78,14 +78,29 @@ function consoleSprintFormatter(sprint) {
     ['Completed/Total points']: `${getCompletedPoints(sprint.issues)}/${getTotalPoints(sprint.issues)}`
   }]);
   console.log();
-  console.log(`Members: ${sprint.members.join(', ')}`);
-  console.log();
-  console.log('Issues:');
-  logTable(sprint.issues.map(i => ({
-    key: i.key,
-    status: i.fields.status.name,
-    summary: i.fields.summary,
-    points: i.fields[points] || '-'
+
+  if (sprint.members) {
+    console.log(`Members: ${sprint.members.join(', ')}`);
+    console.log();
+    console.log('Issues:');
+    logTable(sprint.issues.map(i => ({
+      key: i.key,
+      status: i.fields.status.name,
+      summary: i.fields.summary,
+      points: i.fields[points] || '-',
+      epic: i.fields.epic.key
+    })));
+    console.log();
+  }
+
+  console.log(`Epic Summary:`);
+  logTable(sprint.epics.map(i => ({
+    summary: i.displayName,
+    epic: i.key,
+    points: i.points,
+    percent: ((i.completed / i.total) * 100).toFixed(2),
+    completed: i.completed,
+    total: i.total
   })));
 }
 
@@ -171,9 +186,14 @@ const jsonFormatters = {
   teams: jsonFormatter
 };
 
+const rawFormatter = function (output) {
+  console.log(JSON.stringify(output, null, 2));
+};
+
 const formatters = {
   console: consoleFormatters,
-  json: jsonFormatters
+  json: jsonFormatters,
+  raw: rawFormatter
 };
 
 module.exports = formatters;
