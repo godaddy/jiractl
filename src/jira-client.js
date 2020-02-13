@@ -9,9 +9,10 @@ const debug = {
 };
 
 let sessionCookie;
-const authmode = 'basic';
 
 async function getRequestOptions() {
+  const context = getCurrentContext();
+  const { authmode = 'basic' } = context;
   const opts = {
     json: true,
     followAllRedirects: true,
@@ -22,7 +23,7 @@ async function getRequestOptions() {
     sessionCookie = await getSessionCookie();
     opts.headers.Cookie = sessionCookie;
   } else if (authmode === 'basic') {
-    const { username, password } = getCurrentContext();
+    const { username, password } = context;
     const encoded = Buffer.from(`${username}:${password}`).toString('base64');
     opts.headers.Authorization = `Basic ${encoded}`;
   }

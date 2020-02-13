@@ -26,12 +26,13 @@ function saveConfig(config) {
   fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
 }
 
-function addContext({ context, username, password }) {
+function addContext({ context, username, password, authmode }) {
   const config = loadConfig();
   config.contexts[context] = {
     uri: context,
     username,
-    password
+    password,
+    authmode
   };
   saveConfig(config);
 }

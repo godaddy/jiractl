@@ -1,28 +1,54 @@
-const readlineSync = require('readline-sync');
+const prompts = require('prompts');
+const diagnostics = require('diagnostics');
 const jiraClient = require('./jira-client');
 const { getSessionCookie, makeGetRequest } = jiraClient;
 const config = require('./config');
 const { addContext, addPoints, setCurrentContext, getCurrentContext } = config;
+const debug = diagnostics('jiractl:config');
 
-function getInput({ username, password }) {
-  if (!username) {
-    username = readlineSync.question('Username: ');
-  }
+async function getInput({ username, password, authmode }) {
+  const inputs = await prompts([
+    !username && {
+      type: 'text',
+      name: 'username',
+      message: 'Jira username?'
+    },
+    !password && {
+      type: 'password',
+      name: 'password',
+      message: 'Jira password?'
 
-  if (!password) {
-    password = readlineSync.question('Password: ', { hideEchoBack: true, mask: '' });
-  }
-  return { username, password };
+    },
+    !authmode && {
+      type: 'toggle',
+      name: 'authmode',
+      message: 'Use HTTP Basic Auth?',
+      initial: true,
+      active: 'yes',
+      inactive: 'no',
+      format: basicauth => basicauth && 'basic' || 'cookie'
+    }
+  ].filter(Boolean));
+
+  return {
+    username: username || inputs.username,
+    password: password || inputs.password,
+    authmode: authmode || inputs.authmode
+  };
 }
 
-async function setContext({ id, username, password }) {
+async function setContext({ id, username, password, authmode }) {
   const context = id;
   let defaultContext;
 
-  ({ username, password } = getInput({ username, password }));
+  ({ username, password, authmode } = await getInput({ username, password, authmode }));
 
-  await getSessionCookie({ baseUri: context, username, password });
-  addContext({ context, username, password });
+  debug('Set context: %j', { username, authmode });
+  if (authmode === 'cookie') {
+    await getSessionCookie({ baseUri: context, username, password });
+  }
+
+  addContext({ context, username, password, authmode });
 
   if (!getCurrentContext()) {
     defaultContext = context;
@@ -32,7 +58,7 @@ async function setContext({ id, username, password }) {
   const points = await getEstimator();
   addPoints({ context, points });
 
-  return { context, username, password, points, defaultContext };
+  return { context, username, password, authmode, points, defaultContext };
 }
 
 async function getEstimator() {
