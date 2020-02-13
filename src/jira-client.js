@@ -70,20 +70,23 @@ async function makeQuery({ jql, selector = (results) => results.total } = {}) {
   const uri = makeJiraUri({ uri: 'api/2/search' });
   debug.http(`POST ${uri}`);
 
-  // TODO: move to fetch from rp
-  const response = await rp(Object.assign({}, opts, {
-    method: 'POST',
-    uri,
-    body: {
-      jql,
-      startAt: 0,
-      maxResults: 10000,
-      fields: ['summary', 'status', 'assignee', 'description', points],
-      expand: ['schema', 'names']
-    }
-  }));
-
-  return selector(response);
+  try {
+    // TODO: move to fetch from rp
+    const response = await rp(Object.assign({}, opts, {
+      method: 'POST',
+      uri,
+      body: {
+        jql,
+        startAt: 0,
+        maxResults: 10000,
+        fields: ['summary', 'status', 'assignee', 'description', points],
+        expand: ['schema', 'names']
+      }
+    }));
+    return selector(response);
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
@@ -96,7 +99,16 @@ async function makeGetRequest(url, api = 'agile/1.0', options = {}) {
 
   debug.http(`GET ${uri}`, fullOpts);
 
-  return await rp(fullOpts);
+  try {
+    return await rp(fullOpts);
+  } catch (err) {
+    //
+    // TODO [#28]: Check x-seraph-loginreason and x-authentication-denied-reason headers
+    // to see if a user is hellban from JIRA.
+    // console.dir(err.response.headers);
+    //
+    throw err;
+  }
 }
 
 async function makePutRequest(url, api = 'agile/1.0', data = {}) {
@@ -104,11 +116,15 @@ async function makePutRequest(url, api = 'agile/1.0', data = {}) {
   const uri = makeJiraUri({ uri: `${api}/${url}` });
   debug.http(`PUT ${uri}`);
 
-  return await rp(Object.assign({}, opts, {
-    method: 'PUT',
-    uri,
-    body: data
-  }));
+  try {
+    return await rp(Object.assign({}, opts, {
+      method: 'PUT',
+      uri,
+      body: data
+    }));
+  } catch (err) {
+    throw err;
+  }
 }
 
 module.exports = {
