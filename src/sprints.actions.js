@@ -25,6 +25,7 @@ async function getSprints({ team }, query = {}) {
     },
 
     processResults(result) {
+      // TODO: make this configurable
       return result.values.filter(sprint => sprint.originBoardId === teamId);
     }
   });
