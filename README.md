@@ -22,13 +22,14 @@ Add a context for the Jira instance that you use. E.g:
 
 ```console
 $ jiractl config set-context https://jira.yourteam.com
-Username: name
-Password:
+✔ Jira username? … name
+✔ Jira password? … *************
+✔ Use HTTP Basic Auth? … no / yes
 Context "https://jira.yourteam.com" created.
 Set default context to "https://jira.yourteam.com".
 ```
 
-Add the teams in your project. E.g., for a project named FOO:
+Add the teams in your project. E.g., for a project named FooBar with the abbreviation of FOO:
 ```
 jiractl setup FOO
 ```
@@ -110,11 +111,50 @@ Describe a specific sprint:
 
 ```console
 $ jiractl --team=1111 describe sprint 18465
+
+NAME              START DATE    END DATE      COMPLETED/TOTAL POINTS
+Sharks 4/23-5/4   2020-04-23   2020-05-04   8/28                 
+
+Members: Bruce White, Chum Mako, Anchor Hammerhead, Dori DeGeneres
+
+Issues:
+KEY         STATUS      SUMMARY                             POINTS  EPIC    
+FOO-75      In Progress Don't eat fish                      8       FOO-1143
+FOO-17      Open        Just keep swimming                  3       FOO-1147
+FOO-58      In Progress Fish are friends, not food          2       FOO-1143
+FOO-83      Open        Touch the boat                      5       FOO-1118
+FOO-55      Open        Search for Nemo                     2       FOO-1144
+FOO-1548    Closed      Bug: Cannot swim backwards          8       FOO-1118
+
+Sprint Epic Summary:
+SUMMARY               EPIC       POINTS  % SPRINT   % COMP   TOTAL   COMPLETED
+RTB Shark things      FOO-1143   10      35.71%     35.18%   162     57    
+Improve Morality      FOO-1147   3       10.71%     14.71%   5       34      
+Shark Adventures      FOO-1118   13      46.43%     48.21%   27      56     
+Help Dori find Nemo   FOO-1144   2       7.14%      0.00%    80      0     
+```
+
+>In the above "Sprint Epic Summary" the Completed and % Comp columns represent all issues in the "Closed" state. 
+
+Or get a simplified status report of the sprint without members or issues listed:
+
+```console
+$ jiractl --team=1111 status sprint 18465
+
+NAME              STARTDATE    ENDDATE      COMPLETED/TOTAL POINTS
+Sharks 4/23-5/4   2020-04-23   2020-05-04   8/28                 
+
+Epic Summary:
+SUMMARY               EPIC       POINTS  % SPRINT   % COMP   TOTAL   COMPLETED
+RTB Shark things      FOO-1143   10      35.71%     35.18%   162     57    
+Improve Morality      FOO-1147   3       10.71%     14.71%   5       34      
+Shark Adventures      FOO-1118   13      46.43%     48.21%   27      56     
+Help Dori find Nemo   FOO-1144   2       7.14%      0.00%    80      0     
 ```
 
 ### Epics
 
-Get a team's epics:
+Get a team's open or in-progress epics:
 
 ```console
 $ jiractl --team=1111 get epics

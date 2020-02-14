@@ -71,11 +71,12 @@ function consoleEpicsFormatter(epicsAndStories) {
 
 function consoleSprintFormatter(sprint) {
   const points = getCurrentContext().points;
+  const totalSprintPoints = getTotalPoints(sprint.issues);
   logTable([{
     name: sprint.name,
-    startDate: sprint.startDate || 'Future Sprint',
-    endDate: sprint.endDate || 'Future Sprint',
-    ['Completed/Total points']: `${getCompletedPoints(sprint.issues)}/${getTotalPoints(sprint.issues)}`
+    ['start date']: sprint.startDate || 'Future Sprint',
+    ['end date']: sprint.endDate || 'Future Sprint',
+    ['Completed/Total points']: `${getCompletedPoints(sprint.issues)}/${totalSprintPoints}`
   }]);
   console.log();
 
@@ -93,14 +94,15 @@ function consoleSprintFormatter(sprint) {
     console.log();
   }
 
-  console.log(`Epic Summary:`);
+  console.log(`Sprint Epic Summary:`);
   logTable(sprint.epics.map(i => ({
     summary: i.displayName,
     epic: i.key,
     points: i.points,
-    percent: ((i.completed / i.total) * 100).toFixed(2),
-    completed: i.completed,
-    total: i.total
+    ['% sprint']: ((i.points / totalSprintPoints) * 100).toFixed(2)+'%',
+    ['% comp']: ((i.completed / i.total) * 100).toFixed(2)+'%',
+    ['total']: i.total,
+    ['completed']: i.completed,
   })));
 }
 

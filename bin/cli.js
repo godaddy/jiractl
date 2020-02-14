@@ -25,7 +25,18 @@ const argv = require('yargs')
   .alias('t', 'team')
   .alias('o', 'output')
   .argv;
-
+  // .option('option', {
+  //   alias: 'o',
+  //   describe: "Output format",
+  //   deafult: 'console'
+  // })
+  // .option('team', {
+  //   alias: 't',
+  //   describe: "Jira team ID or alias"
+  // })
+  // .command('get', 'return list of specified context: epics, sprints, teams')
+  // .command('describe', 'return details for specified context: epic, epics, sprint, sprints, team')
+  // .command('status', 'return simplified details for specified context: epic, epics, sprint, sprints')
 let action = argv._[0]; // get, update, describe
 let context = argv._[1]; // epic(s), sprint(s), team(s)
 const id = argv._[2]; // e.g. sprint id, project id
