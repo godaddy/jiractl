@@ -12,7 +12,7 @@ let sessionCookie;
 
 async function getRequestOptions() {
   const context = getCurrentContext();
-  const { authmode = 'basic' } = context;
+  const { authmode = 'cookie' } = context;
   const opts = {
     json: true,
     followAllRedirects: true,
