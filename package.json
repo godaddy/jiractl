@@ -10,7 +10,9 @@
     "lint": "eslint --config .eslintrc.js --fix src/ test/ bin/",
     "posttest": "npm run lint",
     "test": "npm run lint && mocha --recursive",
-    "uninstall": "./bin/cli.js uninstall-completion"
+    "uninstall": "./bin/cli.js uninstall-completion",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "completions": {
     "jiractl": [
@@ -78,7 +80,8 @@
     "request-promise": "^4.2.2",
     "tabtab": "^3.0.2",
     "tmp": "0.1.0",
-    "yargs": "^13.2.1"
+    "yargs": "^13.2.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -91,5 +94,6 @@
     "proxyquire": "^2.0.1",
     "rewire": "^4.0.1",
     "sinon": "^7.2.4"
-  }
+  },
+  "snyk": true
 }
