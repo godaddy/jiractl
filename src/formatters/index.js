@@ -39,6 +39,36 @@ function consoleEpicsFormatter(epicsAndStories) {
   }
 
   function format({ epics, stories }) {
+    // logTable(epics.map(epic => {
+    //   const summary = {
+    //     key: epic.key,
+    //     summary: epic.summary || epic.fields.summary
+    //   };
+
+    //   summary.Completed = epic.completedPoints || '-';
+    //   summary['Total points'] = epic.totalPoints || '-';
+
+    //   return summary;
+    // }));
+    logTable(
+        epics.map(epic => ({
+          key: story.key || '-',
+          summary: epic.summary || epic.fields.summary,
+          completed: epic.completedPoints || '-',
+          ['Total Points']: epic.totalPoints || '-'
+        }))
+      );
+  }
+}
+
+function consoleEpicFormatter(epicsAndStories) {
+  if (Array.isArray(epicsAndStories)) {
+    epicsAndStories.forEach(format);
+  } else {
+    format(epicsAndStories);
+  }
+
+  function format({ epics, stories }) {
     console.log('Epic:');
     logTable(epics.map(epic => {
       const summary = {
@@ -101,13 +131,17 @@ function consoleSprintFormatter(sprint) {
     points: i.points,
     ['% sprint']: ((i.points / totalSprintPoints) * 100).toFixed(2)+'%',
     ['% comp']: ((i.completed / i.total) * 100).toFixed(2)+'%',
-    ['total']: i.total,
-    ['completed']: i.completed,
+    ['end % comp']: (((i.points + i.completed)/ i.total) * 100).toFixed(2)+'%',
   })));
 }
 
 function consoleSprintsFormatter(sprints) {
-  return logTable(sprints.map(s => ({ id: s.id, state: s.state, name: s.name, velocity: s.velocity })));
+  return logTable(sprints.map(s => ({ 
+    id: s.id, 
+    state: s.state, 
+    name: s.name, 
+    velocity: s.velocity, 
+    estimated: s.estimated })));
 }
 
 function consoleTeamFormatter(team) {
@@ -169,7 +203,7 @@ function jsonErrorFormatter({ error, context, action, id }) {
 const consoleFormatters = {
   config: consoleConfigFormatter,
   epics: consoleEpicsFormatter,
-  epic: consoleEpicsFormatter,
+  epic: consoleEpicFormatter,
   error: consoleErrorFormatter,
   sprint: consoleSprintFormatter,
   sprints: consoleSprintsFormatter,

@@ -29,6 +29,7 @@ async function describeEpic({ id }) {
   }
 
   const stories = epicIssues.issues;
+  stories.sort((a, b) => (a.status > b.status) ? 1 : (a.status === b.status) ? ((a.key > b.key) ? 1 : -1) : -1 )
 
   epics[0].totalPoints = getTotalPoints(stories);
   epics[0].completedPoints = getCompletedPoints(stories);

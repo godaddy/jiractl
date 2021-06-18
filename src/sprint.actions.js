@@ -8,7 +8,10 @@ async function describe({ team, id }) {
   const teamId = getTeamId(team);
   const sprint = await client.makeGetRequest(`sprint/${ id }`);
   const issues = await client.makeGetRequest(`board/${ teamId }/sprint/${ id }/issue`);
+  issues.issues.sort((a, b) => (a.status > b.status) ? 1 : (a.status === b.status) ? ((a.key > b.key) ? 1 : -1) : -1 )
+
   const epics = await getIssueEpics(issues);
+  epics.sort((a, b) => (a.points < b.points) ? 1 : (a.points === b.points) ? ((a.key > b.key) ? 1 : -1) : -1 )
 
   const members = [...new Set(issues.issues.filter(issue => issue.fields.assignee).map(
     issue => issue.fields.assignee.displayName))];
