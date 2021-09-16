@@ -68,7 +68,7 @@
   "author": "GoDaddy Operating Company, LLC",
   "license": "MIT",
   "dependencies": {
-    "cli-table3": "^0.5.0",
+    "cli-table3": "^0.6.0",
     "diagnostics": "^2.0.2",
     "editor2": "^1.0.3",
     "make-promises-safe": "^5.1.0",
@@ -78,7 +78,7 @@
     "request-promise": "^4.2.2",
     "tabtab": "^3.0.2",
     "tmp": "0.1.0",
-    "yargs": "^13.2.1"
+    "yargs": "^15.0.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",
