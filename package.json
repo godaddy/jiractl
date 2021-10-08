@@ -73,7 +73,7 @@
     "editor2": "^1.0.3",
     "make-promises-safe": "^5.1.0",
     "opn": "^6.0.0",
-    "prompts": "^2.3.0",
+    "prompts": "^2.4.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "tabtab": "^3.0.2",
