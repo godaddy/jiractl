@@ -74,8 +74,8 @@
     "make-promises-safe": "^5.1.0",
     "opn": "^6.0.0",
     "prompts": "^2.3.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.2",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "tabtab": "^3.0.2",
     "tmp": "0.1.0",
     "yargs": "^13.2.1"
